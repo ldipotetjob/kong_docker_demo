@@ -74,7 +74,7 @@ curl -i -X POST --url http://localhost:8001/services/time-service/routes --data 
 
 ## Create a Service Proxy using url NOT using metadatas or services tags
 
-```
+```shell
 kong-app_ipaddress=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' kong-app)
 # creating service
 curl  -i -X POST --url http://localhost:8001/services/ -d "name=time-api" -d "url=http://${kong-app_ipaddress}:3000/"
