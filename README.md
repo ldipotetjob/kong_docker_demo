@@ -72,6 +72,20 @@ curl -i -X POST --url http://localhost:8001/services/ --data 'name=time-service'
 curl -i -X POST --url http://localhost:8001/services/time-service/routes --data 'hosts[]=time-service'
 ```
 
+## Create a Service Proxy using url NOT using metadatas or services tags
+
+```
+kong-app_ipaddress=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' kong-app)
+# creating service
+curl  -i -X POST --url http://localhost:8001/services/ -d "name=time-api" -d "url=http://${kong-app_ipaddress}:3000/"
+# creating route
+curl  -i -X POST --url http://localhost:8001/services/time-api/routes -d 'name=time-api-route' -d 'paths[]=/'
+
+# call the api 
+curl http://localhost:8000
+# response: Current time: 2/23/2023, 1:46:22 PM
+```
+
 Recall that this service is running in the *kong-app* container and is exposed to the isolated Docker network via port 3000 but callers cannot access it without going through the API gateway. We can reach the ***time-service*** using the *Host* header:
 
 ```
